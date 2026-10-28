@@ -3,8 +3,11 @@ from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QPixmap
 from PIL import Image
 import sys
+from misc_classes import *
 
 app = QApplication(sys.argv)
+
+settings = UserSettings()
 
 def load_image(name: str, size: tuple[int, int]):
     img = Image.open(name)
@@ -13,11 +16,13 @@ def load_image(name: str, size: tuple[int, int]):
 
 class MainWindow(QMainWindow):
     def __init__(self):
+        global settings
+
         super().__init__()
         self.setWindowTitle("MyLittleSunflower")
+        self.setStyleSheet('background-color: lightblue;')
         mainbox = QHBoxLayout()
         box1 = QVBoxLayout()
-
         imagelabel = QLabel()
         imagelabel.setPixmap(load_image('res/flower-default.png', (128, 256)))
         imagelabel.setFixedSize(QSize(128, 256))
@@ -37,7 +42,6 @@ class MainWindow(QMainWindow):
 
         time = QLabel()
         time.setAlignment(Qt.AlignmentFlag.AlignRight)
-        time.setText('10\n21')
         font = time.font()
         font.setPixelSize(70)
         time.setFont(font)
@@ -57,6 +61,10 @@ class MainWindow(QMainWindow):
         font.setPixelSize(14)
         label2.setFont(font)
         box2.addWidget(label2)
+
+        timer = TimeTimer(self, time, label1, label2, progress, settings)
+        timer.timerEvent(None)
+        timer.startTimer(1000, Qt.TimerType.CoarseTimer)
 
         extra = QWidget()
         extra.setLayout(box2)
