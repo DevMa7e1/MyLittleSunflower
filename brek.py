@@ -1,4 +1,5 @@
 from PyQt6.QtCore import QObject, QTimerEvent, Qt, QTimer, QSize
+from PyQt6.QtGui import QCloseEvent
 from PyQt6.QtWidgets import QWidget, QApplication, QVBoxLayout, QLabel
 from time import time
 
@@ -15,6 +16,9 @@ class BrekWindow(QWidget):
         app.applicationStateChanged.connect(self.focusOut)
     def focusOut(self) -> None:
         close()
+    def closeEvent(self, a0: QCloseEvent | None) -> None:
+        close()
+        return super().closeEvent(a0)
 
 class BrekTimer(QTimer):
     def __init__(self, timel: QLabel, mover: QWidget, parent: QObject | None = None) -> None:
@@ -24,9 +28,9 @@ class BrekTimer(QTimer):
     def timerEvent(self, a0: QTimerEvent | None) -> None:
         global start, end
         string = ''
-        string += str(int((end-time())//60))
+        string += str(int(round(end-time())//60))
         string += 'min '
-        string += str(round((end-time())%60))
+        string += str(round((end-time()))%60)
         string += 's'
         self.timel.setText(string)
         if int(end-time()) % 400 <= 200:
@@ -77,7 +81,6 @@ def brek(breaktime: int):
 
     brekwindow.setLayout(box)
     brekwindow.showFullScreen()
-    brekwindow.destroyed.connect(close)
 
 def close():
     print('Caught')
