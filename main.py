@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
         label2.setFont(font)
         box2.addWidget(label2)
 
-        timer = TimeTimer(self, time, label1, label2, progress, settings)
+        timer = TimeTimer(self, time, label1, label2, progress, settings, app)
         timer.timerEvent(None)
         timer.startTimer(1000, Qt.TimerType.CoarseTimer)
 
